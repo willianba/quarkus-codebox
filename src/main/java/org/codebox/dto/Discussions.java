@@ -7,10 +7,10 @@ import io.quarkus.hibernate.orm.panache.PanacheEntity;
 @Entity
 public class Discussions extends PanacheEntity {
 
-    private String id;
-    private String condo;
-    private String creationDate;
-    private String creator;
-    private boolean deleted;
+    public String id;
+    public String condo;
+    public String creationDate;
+    public String creator;
+    public boolean deleted;
     
 }

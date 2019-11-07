@@ -7,11 +7,11 @@ import io.quarkus.hibernate.orm.panache.PanacheEntity;
 @Entity
 public class Packages extends PanacheEntity {
 
-    private String id;
-    private String condo;
-    private String creationDate;
-    private String creator;
-    private boolean deleted;
-    private String recipient;
+    public String id;
+    public String condo;
+    public String creationDate;
+    public String creator;
+    public boolean deleted;
+    public String recipient;
     
 }

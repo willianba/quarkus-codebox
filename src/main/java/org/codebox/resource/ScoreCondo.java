@@ -29,6 +29,23 @@ public class ScoreCondo {
         this.trusteecomments = trusteecomments;
     }
 
+    public ScoreCondo(String condo_id){
+        long alerts = Alerts.count("condo_id", condo_id);
+        long trusteediscussions = Condos_trust_comments.find("condo_id", condo_id);
+        int lobbyauths = LobbyAuths.count("condo_id", condo_id);
+        long events = Condos_events.find("condo_id", condo_id);
+        long packages = Packages.count("condo_id", condo_id);
+        long logins = Condos_total_login.find("condo_id", condo_id);
+        long discussions = Discussions.count("condo_id", condo_id);
+        long discussioncomments = Condos_disc_comments.find("condo_id", condo_id);
+        long residentdiscussions = ResidentDiscussions.count("condo_id", condo_id);
+        long residentdiscussioncomments = Condos_resident_disc_comments.find("condo_id", condo_id);
+        long trusteecomments = TrusteeDiscussions.count("condo_id", condo_id);
+
+        ScoreCondo((int) alerts, (int) trusteediscussions, (int) lobbyauths, (int) events, (int) packages,(int) logins, (int) discussions,
+                      (int) discussioncomments, (int) residentdiscussions,(int) residentdiscussioncomments, (int) trusteecomments)
+    }
+
     public int getAlerts() {return alerts;}
 
     public int getTrusteediscussions() {return trusteediscussions;}
@@ -71,6 +88,24 @@ public class ScoreCondo {
                 getDiscussions() * 4 + getDiscussioncomments() * 2 + getResidentdiscussions() * 2 + getResidentdiscussioncomments() * 2 +
                 getTrusteecomments() + 2);
 
-        return score;}
+        return score;
+    }
+
+    public String ScoreToJson(){
+        return "{"score": 1,
+        "alerts":1,
+        "trusteediscussions": 1,
+        "lobbyauths": 1,
+        "events": 1,
+        "packages": 1,
+        "logins": 1,
+        "discussions": 1,
+        "discussioncomments": 1,
+        "residentdiscussions": 1,
+        "residentdiscussioncomments": 1,
+        "trusteecomments": 1
+        }";
+}
+
 
 }
