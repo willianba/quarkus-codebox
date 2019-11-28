@@ -5,7 +5,6 @@ import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 
 import org.codebox.entities.*;
-import org.codebox.entities.Package;
 
 @ApplicationScoped
 public class ScoreCalculator {
