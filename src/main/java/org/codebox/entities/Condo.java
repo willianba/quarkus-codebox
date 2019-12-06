@@ -12,11 +12,20 @@ import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 public class Condo extends PanacheEntityBase {
   @Id
   @Column(name = "condo_id")
-  public String condoId;
+  private String condoId;
 
   @Column(nullable = false)
   public String name;
 
   @Column(nullable = false)
   public Boolean deleted;
+
+  public String getId() {
+    return condoId;
+  }
+
+  @Override
+  public String toString() {
+    return "Name: " + name + " Id: " + condoId + " deleted: " + deleted;
+  }
 }
