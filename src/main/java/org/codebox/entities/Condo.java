@@ -1,22 +1,53 @@
 package org.codebox.entities;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CompletionStage;
 
-import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
+import io.vertx.axle.pgclient.PgPool;
+import io.vertx.axle.sqlclient.Row;
+import io.vertx.axle.sqlclient.RowSet;
+import io.vertx.axle.sqlclient.Tuple;
 
-@Entity
-@Table(name = "condos")
-public class Condo extends PanacheEntityBase {
-  @Id
-  @Column(name = "condo_id")
-  public String condoId;
-
-  @Column(nullable = false)
+public class Condo {
+  public String id;
   public String name;
-
-  @Column(nullable = false)
   public Boolean deleted;
+
+  public Condo(String id, String name, boolean deleted) {
+    this.id = id;
+    this.name = name;
+    this.deleted = deleted;
+  }
+
+  public static CompletionStage<List<Condo>> findAll(PgPool client) {
+    return client.query("SELECT * FROM CONDOS").thenApply(pgRowSet -> {
+      List<Condo> list = new ArrayList<>(pgRowSet.size());
+      for (Row row : pgRowSet) {
+        list.add(from(row));
+      }
+      return list;
+    });
+  }
+
+  public static CompletionStage<Condo> findById(PgPool client, String id) {
+    return client.preparedQuery("SELECT * FROM CONDOS WHERE condo_id = $1", Tuple.of(id))
+      .thenApply(RowSet::iterator)
+      .thenApply(iterator -> iterator.hasNext() ? from(iterator.next()) : null);
+  }
+
+  public static CompletionStage<Condo> update(PgPool client, Condo condo) {
+    return client.preparedQuery("UPDATE CONDOS SET name = $1, deleted = $2 WHERE condo_id = $3 RETURNING condo_id, name, deleted",
+      Tuple.of(condo.name, condo.deleted, condo.id))
+      .thenApply(RowSet::iterator)
+      .thenApply(iterator -> iterator.hasNext() ? from(iterator.next()) : null);
+  }
+
+  private static Condo from(Row row) {
+    return new Condo(
+      row.getString("id"),
+      row.getString("name"),
+      row.getBoolean("deleted")
+    );
+  }
 }
