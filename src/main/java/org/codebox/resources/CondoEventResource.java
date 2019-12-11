@@ -13,20 +13,20 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 
-import org.codebox.entities.Condo;
+import org.codebox.entities.CondoEvent;
 import org.jboss.resteasy.annotations.jaxrs.PathParam;
 
 import io.vertx.axle.pgclient.PgPool;
 
 @ApplicationScoped
-@Path("condos")
+@Path("condos/events")
 @Produces(MediaType.APPLICATION_JSON)
-public class CondoResource {
+public class CondoEventResource {
   @Inject PgPool client;
 
   @GET
   public CompletionStage<Response> getAll() {
-    return Condo.findAll(client)
+    return CondoEvent.findAll(client)
       .thenApply(Response::ok)
       .thenApply(ResponseBuilder::build);
   }
@@ -34,14 +34,14 @@ public class CondoResource {
   @GET
   @Path("{id}")
   public CompletionStage<Response> getSingle(@PathParam String id) {
-    return Condo.findById(client, id)
+    return CondoEvent.findById(client, id)
       .thenApply(condo -> condo != null ? Response.ok(condo) : Response.status(Status.NOT_FOUND))
       .thenApply(ResponseBuilder::build);
   }
 
   @PUT
-  public CompletionStage<Response> change(Condo condo) {
-    return Condo.update(client, condo)
+  public CompletionStage<Response> change(CondoEvent condoEvent) {
+    return CondoEvent.update(client, condoEvent)
     .thenApply(updatedCondo -> updatedCondo != null ? Response.ok(updatedCondo) : Response.status(Status.NOT_FOUND))
     .thenApply(ResponseBuilder::build);
   }

@@ -21,7 +21,7 @@ public class Condo {
   }
 
   public static CompletionStage<List<Condo>> findAll(PgPool client) {
-    return client.query("SELECT * FROM CONDOS").thenApply(pgRowSet -> {
+    return client.query("SELECT * FROM condos").thenApply(pgRowSet -> {
       List<Condo> list = new ArrayList<>(pgRowSet.size());
       for (Row row : pgRowSet) {
         list.add(from(row));
@@ -31,13 +31,13 @@ public class Condo {
   }
 
   public static CompletionStage<Condo> findById(PgPool client, String id) {
-    return client.preparedQuery("SELECT * FROM CONDOS WHERE condo_id = $1", Tuple.of(id))
+    return client.preparedQuery("SELECT * FROM condos WHERE condo_id = $1", Tuple.of(id))
       .thenApply(RowSet::iterator)
       .thenApply(iterator -> iterator.hasNext() ? from(iterator.next()) : null);
   }
 
   public static CompletionStage<Condo> update(PgPool client, Condo condo) {
-    return client.preparedQuery("UPDATE CONDOS SET name = $1, deleted = $2 WHERE condo_id = $3 RETURNING condo_id, name, deleted",
+    return client.preparedQuery("UPDATE condos SET name = $1, deleted = $2 WHERE condo_id = $3 RETURNING condo_id, name, deleted",
       Tuple.of(condo.name, condo.deleted, condo.id))
       .thenApply(RowSet::iterator)
       .thenApply(iterator -> iterator.hasNext() ? from(iterator.next()) : null);
@@ -45,7 +45,7 @@ public class Condo {
 
   private static Condo from(Row row) {
     return new Condo(
-      row.getString("id"),
+      row.getString("condo_id"),
       row.getString("name"),
       row.getBoolean("deleted")
     );
